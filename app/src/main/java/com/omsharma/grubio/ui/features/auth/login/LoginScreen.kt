@@ -240,7 +240,9 @@ fun LoginScreen(
             GroupSocialButtons(
                 color = Color.Black,
                 onFacebookClick = {},
-                onGoogleClick = {}
+                onGoogleClick = {
+                    viewModel.onGoogleLoginClick(context)
+                }
             )
         }
     }

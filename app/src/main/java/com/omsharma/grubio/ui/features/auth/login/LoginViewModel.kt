@@ -1,9 +1,15 @@
 package com.omsharma.grubio.ui.features.auth.login
 
+import android.content.Context
+import android.util.Log
+import androidx.credentials.CredentialManager
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.omsharma.grubio.data.FoodApi
+import com.omsharma.grubio.data.auth.GoogleAuthUiProvider
 import com.omsharma.grubio.data.model.LoginRequest
+import com.omsharma.grubio.data.model.OAuthRequest
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -16,6 +22,8 @@ import javax.inject.Inject
 class LoginViewModel @Inject constructor(
     val foodApi: FoodApi
 ) : ViewModel() {
+
+    val googleAuthUiProvider = GoogleAuthUiProvider()
 
     private val _uiState = MutableStateFlow<LoginEvent>(LoginEvent.Nothing)
     val uiState = _uiState.asStateFlow()
@@ -63,6 +71,35 @@ class LoginViewModel @Inject constructor(
     fun onSignupClick() {
         viewModelScope.launch {
             _navigationEvent.emit(LoginNavigationEvent.NavigateToSignup)
+        }
+    }
+
+    fun onGoogleLoginClick(context: Context) {
+        viewModelScope.launch {
+            _uiState.value = LoginEvent.Loading
+            val response = googleAuthUiProvider.login(
+                context,
+                CredentialManager.create(context)
+            )
+
+            if (response!=null) {
+
+                val request = OAuthRequest(
+                    token = response.token,
+                    provider = "google"
+                )
+                val res = foodApi.oAuth(request)
+                if(res.token.isNotEmpty()) {
+                    Log.d("LoginViewModel", "onGoogleLoginClick: ${res.token}")
+                    _uiState.value = LoginEvent.Success
+                    _navigationEvent.emit(LoginNavigationEvent.NavigateToHome)
+                } else {
+                    _uiState.value = LoginEvent.Error
+                }
+
+            } else {
+                _uiState.value = LoginEvent.Error
+            }
         }
     }
 
