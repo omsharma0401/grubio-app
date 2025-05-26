@@ -1,6 +1,5 @@
-package com.omsharma.grubio.ui.features.auth.signup
+package com.omsharma.grubio.ui.features.auth.login
 
-import android.widget.Toast
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
@@ -50,17 +49,17 @@ import com.omsharma.grubio.ui.GroupSocialButtons
 import com.omsharma.grubio.ui.navigation.AuthScreen
 import com.omsharma.grubio.ui.navigation.Home
 import com.omsharma.grubio.ui.navigation.Login
+import com.omsharma.grubio.ui.navigation.Signup
 import com.omsharma.grubio.ui.theme.Orange
 import com.omsharma.grubio.ui.theme.metropolisFontFamily
 import kotlinx.coroutines.flow.collectLatest
 
 @Composable
-fun SignUpScreen(
+fun LoginScreen(
     navController: NavController,
-    viewModel: SignupViewModel = hiltViewModel()
+    viewModel: LoginViewModel = hiltViewModel()
 ) {
 
-    val name = viewModel.name.collectAsStateWithLifecycle()
     val email = viewModel.email.collectAsStateWithLifecycle()
     val password = viewModel.password.collectAsStateWithLifecycle()
 
@@ -74,13 +73,13 @@ fun SignUpScreen(
         val uiState = viewModel.uiState.collectAsState()
         when (uiState.value) {
 
-            is SignupViewModel.SignupEvent.Error -> {
+            is LoginViewModel.LoginEvent.Error -> {
                 // show error
                 loading.value = false
                 errorMessage.value = "Failed"
             }
 
-            is SignupViewModel.SignupEvent.Loading -> {
+            is LoginViewModel.LoginEvent.Loading -> {
                 loading.value = true
                 errorMessage.value = null
             }
@@ -94,7 +93,7 @@ fun SignUpScreen(
         LaunchedEffect(true) {
             viewModel.navigationEvent.collectLatest { event ->
                 when (event) {
-                    is SignupViewModel.SignupNavigationEvent.NavigateToHome -> {
+                    is LoginViewModel.LoginNavigationEvent.NavigateToHome -> {
                         navController.navigate(Home) {
                             popUpTo(AuthScreen) {
                                 inclusive = true
@@ -102,8 +101,8 @@ fun SignUpScreen(
                         }
                     }
 
-                    is SignupViewModel.SignupNavigationEvent.NavigateToLogin -> {
-                        navController.navigate(Login)
+                    is LoginViewModel.LoginNavigationEvent.NavigateToSignup -> {
+                        navController.navigate(Signup)
                     }
                 }
             }
@@ -127,7 +126,7 @@ fun SignUpScreen(
             Text(
                 modifier = Modifier
                     .fillMaxWidth(),
-                text = stringResource(id = R.string.sign_up),
+                text = stringResource(id = R.string.login),
                 fontFamily = metropolisFontFamily,
                 fontWeight = FontWeight.Bold,
                 fontSize = 28.sp,
@@ -135,21 +134,6 @@ fun SignUpScreen(
             )
 
             Spacer(modifier = Modifier.size(42.dp))
-
-            CustomTextField(
-                value = name.value,
-                onValueChange = { viewModel.onNameChange(it) },
-                label = {
-                    Text(
-                        text = stringResource(id = R.string.full_name),
-                        fontFamily = metropolisFontFamily,
-                        fontWeight = FontWeight.SemiBold,
-                        fontSize = 14.sp,
-                        color = Color.Gray
-                    )
-                },
-                modifier = Modifier.fillMaxWidth(),
-            )
 
             CustomTextField(
                 value = email.value,
@@ -197,7 +181,7 @@ fun SignUpScreen(
             )
 
             Button(
-                onClick = viewModel::onSignupClick,
+                onClick = viewModel::onLoginClick,
                 modifier = Modifier.height(48.dp),
                 enabled = !loading.value,
                 colors = ButtonDefaults.buttonColors(
@@ -223,7 +207,7 @@ fun SignUpScreen(
                             )
                         } else {
                             Text(
-                                text = stringResource(id = R.string.sign_up),
+                                text = stringResource(id = R.string.login),
                                 color = Color.White,
                                 fontFamily = metropolisFontFamily,
                                 fontWeight = FontWeight.SemiBold,
@@ -237,11 +221,11 @@ fun SignUpScreen(
             Spacer(modifier = Modifier.size(16.dp))
 
             Text(
-                text = stringResource(id = R.string.already_have_account),
+                text = stringResource(id = R.string.dont_have_account),
                 modifier = Modifier
                     .padding(8.dp)
                     .clickable(interactionSource = null, indication = null) {
-                        viewModel.onLoginClick()
+                        viewModel.onSignupClick()
                     }
                     .fillMaxWidth(),
                 textAlign = TextAlign.Center,
@@ -264,6 +248,6 @@ fun SignUpScreen(
 
 @Preview
 @Composable
-private fun SignUpScreenPreview() {
-    SignUpScreen(rememberNavController())
+private fun LoginScreenPreview() {
+    LoginScreen(rememberNavController())
 }

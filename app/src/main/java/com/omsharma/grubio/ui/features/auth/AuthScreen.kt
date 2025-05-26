@@ -4,18 +4,14 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.safeContentPadding
 import androidx.compose.foundation.layout.safeDrawingPadding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -28,6 +24,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -36,14 +33,19 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.omsharma.grubio.R
 import com.omsharma.grubio.ui.GroupSocialButtons
-import com.omsharma.grubio.ui.SocialButton
+import com.omsharma.grubio.ui.navigation.Login
+import com.omsharma.grubio.ui.navigation.Signup
 import com.omsharma.grubio.ui.theme.Orange
 import com.omsharma.grubio.ui.theme.metropolisFontFamily
 
 @Composable
-fun AuthScreen() {
+fun AuthScreen(
+    navController: NavController
+) {
 
     val imageSize = remember { mutableStateOf(IntSize.Zero) }
 
@@ -63,6 +65,7 @@ fun AuthScreen() {
         Image(
             painter = painterResource(R.drawable.backround),
             contentDescription = null,
+            contentScale = ContentScale.FillBounds,
             modifier = Modifier
                 .onGloballyPositioned {
                     imageSize.value = it.size
@@ -139,7 +142,7 @@ fun AuthScreen() {
             Spacer(modifier = Modifier.height(16.dp))
 
             Button(
-                onClick = {},
+                onClick = {navController.navigate(Signup)},
                 modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp),
                 colors = ButtonDefaults.buttonColors(containerColor = Color.Gray.copy(alpha = 0.2f)),
                 shape = RoundedCornerShape(32.dp),
@@ -160,7 +163,7 @@ fun AuthScreen() {
                 modifier = Modifier
                     .padding(16.dp)
                     .clickable(interactionSource = null, indication = null) {
-
+                        navController.navigate(Login)
                     },
                 color = Color.White,
                 fontFamily = metropolisFontFamily,
@@ -174,5 +177,5 @@ fun AuthScreen() {
 @Preview
 @Composable
 private fun AuthScreenPreview() {
-    AuthScreen()
+    AuthScreen(rememberNavController())
 }

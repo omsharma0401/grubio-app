@@ -1,6 +1,7 @@
 package com.omsharma.grubio.data
 
 import com.omsharma.grubio.data.model.AuthResponse
+import com.omsharma.grubio.data.model.LoginRequest
 import com.omsharma.grubio.data.model.SignupRequest
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -12,4 +13,7 @@ interface FoodApi {
 
     @POST("/auth/signup")
     suspend fun signup(@Body request: SignupRequest): AuthResponse
+
+    @POST("/auth/login")
+    suspend fun login(@Body request: LoginRequest): AuthResponse
 }

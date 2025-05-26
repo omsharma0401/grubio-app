@@ -6,17 +6,25 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.graphics.Color
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import com.omsharma.grubio.data.FoodApi
 import com.omsharma.grubio.ui.features.auth.AuthScreen
+import com.omsharma.grubio.ui.features.auth.login.LoginScreen
 import com.omsharma.grubio.ui.features.auth.signup.SignUpScreen
+import com.omsharma.grubio.ui.navigation.AuthScreen
+import com.omsharma.grubio.ui.navigation.Home
+import com.omsharma.grubio.ui.navigation.Login
+import com.omsharma.grubio.ui.navigation.Signup
 import com.omsharma.grubio.ui.theme.GrubioTheme
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -42,9 +50,25 @@ class MainActivity : ComponentActivity() {
         setContent {
             GrubioTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    SignUpScreen(
+                    val navController = rememberNavController()
+                    NavHost(
+                        navController = navController,
+                        startDestination = AuthScreen,
                         modifier = Modifier.padding(innerPadding)
-                    )
+                    ) {
+                        composable<Signup> {
+                            SignUpScreen(navController)
+                        }
+                        composable<AuthScreen> {
+                            AuthScreen(navController)
+                        }
+                        composable<Login> {
+                            LoginScreen(navController)
+                        }
+                        composable<Home> {
+                            Box(modifier = Modifier.fillMaxSize().background(Color.Red))
+                        }
+                    }
                 }
             }
         }

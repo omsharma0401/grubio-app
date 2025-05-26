@@ -3,11 +3,12 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
 
-    // KSP
-    id("com.google.devtools.ksp")
-
     // Dagger Hilt
     id("dagger.hilt.android.plugin")
+    id("com.google.devtools.ksp")
+
+    // Serialization
+    id("org.jetbrains.kotlin.plugin.serialization")
 
 }
 
@@ -86,5 +87,16 @@ dependencies {
 
     // ViewModel Lifecycle
     implementation("androidx.lifecycle:lifecycle-runtime-compose:2.9.0")
+
+    // Navigation
+    implementation("androidx.navigation:navigation-compose:2.9.0")
+
+    // Serialization
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
+
+    // Google Login
+    implementation("androidx.credentials:credentials:1.5.0")
+    implementation("androidx.credentials:credentials-play-services-auth:1.5.0")
+    implementation("com.google.android.libraries.identity.googleid:googleid:1.1.1")
 
 }

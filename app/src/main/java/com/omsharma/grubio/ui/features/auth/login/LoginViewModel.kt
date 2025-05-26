@@ -1,11 +1,10 @@
-package com.omsharma.grubio.ui.features.auth.signup
+package com.omsharma.grubio.ui.features.auth.login
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.omsharma.grubio.data.FoodApi
-import com.omsharma.grubio.data.model.SignupRequest
+import com.omsharma.grubio.data.model.LoginRequest
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
@@ -14,28 +13,21 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class SignupViewModel @Inject constructor(
+class LoginViewModel @Inject constructor(
     val foodApi: FoodApi
 ) : ViewModel() {
 
-    private val _uiState = MutableStateFlow<SignupEvent>(SignupEvent.Nothing)
+    private val _uiState = MutableStateFlow<LoginEvent>(LoginEvent.Nothing)
     val uiState = _uiState.asStateFlow()
 
-    private val _navigationEvent = MutableSharedFlow<SignupNavigationEvent>()
+    private val _navigationEvent = MutableSharedFlow<LoginNavigationEvent>()
     val navigationEvent = _navigationEvent.asSharedFlow()
-
-    private val _name = MutableStateFlow("")
-    val name = _name.asStateFlow()
 
     private val _email = MutableStateFlow("")
     val email = _email.asStateFlow()
 
     private val _password = MutableStateFlow("")
     val password = _password.asStateFlow()
-
-    fun onNameChange(name: String) {
-        _name.value = name
-    }
 
     fun onEmailChange(email: String) {
         _email.value = email
@@ -45,45 +37,44 @@ class SignupViewModel @Inject constructor(
         _password.value = password
     }
 
-    fun onSignupClick() {
+    fun onLoginClick() {
         viewModelScope.launch {
-            _uiState.value = SignupEvent.Loading
+            _uiState.value = LoginEvent.Loading
 
             try {
-                val response = foodApi.signup(
-                    SignupRequest(
-                        name = _name.value,
+                val response = foodApi.login(
+                    LoginRequest(
                         email = _email.value,
                         password = _password.value
                     )
                 )
                 if (response.token.isNotEmpty()) {
-                    _uiState.value = SignupEvent.Success
-                    _navigationEvent.emit(SignupNavigationEvent.NavigateToHome)
+                    _uiState.value = LoginEvent.Success
+                    _navigationEvent.emit(LoginNavigationEvent.NavigateToHome)
                 }
             } catch (e: Exception) {
                 e.printStackTrace()
-                _uiState.value = SignupEvent.Error
+                _uiState.value = LoginEvent.Error
             }
         }
 
     }
 
-    fun onLoginClick() {
+    fun onSignupClick() {
         viewModelScope.launch {
-            _navigationEvent.emit(SignupNavigationEvent.NavigateToLogin)
+            _navigationEvent.emit(LoginNavigationEvent.NavigateToSignup)
         }
     }
 
-    sealed class SignupNavigationEvent {
-        object NavigateToLogin : SignupNavigationEvent()
-        object NavigateToHome : SignupNavigationEvent()
+    sealed class LoginNavigationEvent {
+        object NavigateToSignup : LoginNavigationEvent()
+        object NavigateToHome : LoginNavigationEvent()
     }
 
-    sealed class SignupEvent {
-        object Nothing : SignupEvent()
-        object Success : SignupEvent()
-        object Error : SignupEvent()
-        object Loading : SignupEvent()
+    sealed class LoginEvent {
+        object Nothing : LoginEvent()
+        object Success : LoginEvent()
+        object Error : LoginEvent()
+        object Loading : LoginEvent()
     }
 }

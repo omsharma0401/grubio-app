@@ -64,7 +64,7 @@ fun GroupSocialButtons(
 
             Text(
                 color = color,
-                text = stringResource(id = R.string.sign_in_with),
+                text = stringResource(id = R.string.sign_up_with),
                 fontFamily = metropolisFontFamily,
                 fontWeight = FontWeight.SemiBold,
                 fontSize = 14.sp
@@ -89,13 +89,13 @@ fun GroupSocialButtons(
             SocialButton(
                 modifier = modifier.weight(1f),
                 icon = R.drawable.ic_facebook,
-                title = R.string.sign_with_facebook,
+                title = R.string.sign_up_with_facebook,
                 onClick = onFacebookClick,
             )
             SocialButton(
                 modifier = modifier.weight(1f),
                 icon = R.drawable.ic_google,
-                title = R.string.sign_with_google,
+                title = R.string.sign_up_with_google,
                 onClick = onGoogleClick,
             )
         }
