@@ -15,6 +15,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import com.omsharma.grubio.data.FoodApi
+import com.omsharma.grubio.ui.features.auth.AuthScreen
+import com.omsharma.grubio.ui.features.auth.signup.SignUpScreen
 import com.omsharma.grubio.ui.theme.GrubioTheme
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -40,8 +42,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             GrubioTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Text(
-                        text = "Om",
+                    SignUpScreen(
                         modifier = Modifier.padding(innerPadding)
                     )
                 }

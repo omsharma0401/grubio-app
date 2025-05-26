@@ -14,6 +14,7 @@ val metropolisFontFamily = FontFamily(
     Font(R.font.metropolis_semibold, FontWeight.SemiBold),
     Font(R.font.metropolis_bold, FontWeight.Bold),
     Font(R.font.metropolis_thin, FontWeight.Thin),
+    Font(R.font.metropolis_extrabold, FontWeight.ExtraBold)
 
 )
 
