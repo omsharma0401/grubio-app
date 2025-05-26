@@ -166,7 +166,8 @@ fun CustomTextField(
     colors: TextFieldColors = OutlinedTextFieldDefaults.colors().copy(
         focusedIndicatorColor = Orange,
         unfocusedIndicatorColor = Color.LightGray.copy(alpha = 0.4f),
-        focusedTextColor = Color.Black
+        focusedTextColor = Color.Black,
+        unfocusedTextColor = Color.Black,
     )
 ) {
     Column(Modifier.padding(vertical = 8.dp)) {
