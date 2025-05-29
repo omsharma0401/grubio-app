@@ -1,5 +1,7 @@
 package com.omsharma.grubio.ui
 
+import android.annotation.SuppressLint
+import androidx.activity.ComponentActivity
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
@@ -19,36 +21,36 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldColors
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.omsharma.grubio.R
+import com.omsharma.grubio.ui.features.auth.BaseAuthViewModel
 import com.omsharma.grubio.ui.theme.Orange
-import com.omsharma.grubio.ui.theme.metropolisFontFamily
 
+
+@SuppressLint("ContextCastToActivity")
 @Composable
 fun GroupSocialButtons(
-    modifier: Modifier = Modifier,
-    color: Color = Color.Gray,
-    onFacebookClick: () -> Unit,
-    onGoogleClick: () -> Unit,
+    color: Color = Color.White,
+    viewModel: BaseAuthViewModel
 ) {
-    Column(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
+
+    Column {
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.Center,
@@ -57,46 +59,38 @@ fun GroupSocialButtons(
             HorizontalDivider(
                 modifier = Modifier
                     .weight(1f)
-                    .padding(start = 8.dp, end = 8.dp),
+                    .padding(start = 8.dp),
                 thickness = 1.dp,
                 color = color
             )
-
             Text(
-                color = color,
                 text = stringResource(id = R.string.sign_up_with),
-                fontFamily = metropolisFontFamily,
-                fontWeight = FontWeight.SemiBold,
-                fontSize = 14.sp
+                color = color,
+                modifier = Modifier.padding(8.dp)
             )
-
             HorizontalDivider(
                 modifier = Modifier
                     .weight(1f)
-                    .padding(start = 8.dp, end = 8.dp),
+                    .padding(end = 8.dp),
                 thickness = 1.dp,
                 color = color
             )
-
         }
-
-        Spacer(modifier = Modifier.size(16.dp))
+        val context = LocalContext.current as ComponentActivity
 
         Row(
             modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceAround
+            horizontalArrangement = Arrangement.SpaceBetween
         ) {
             SocialButton(
-                modifier = modifier.weight(1f),
                 icon = R.drawable.ic_facebook,
                 title = R.string.sign_up_with_facebook,
-                onClick = onFacebookClick,
+                onClick = { viewModel.onFacebookClicked(context) }
             )
             SocialButton(
-                modifier = modifier.weight(1f),
                 icon = R.drawable.ic_google,
                 title = R.string.sign_up_with_google,
-                onClick = onGoogleClick,
+                onClick = { viewModel.onGoogleClicked(context) }
             )
         }
 
@@ -106,19 +100,15 @@ fun GroupSocialButtons(
 
 @Composable
 fun SocialButton(
-    modifier: Modifier = Modifier,
-    icon: Int,
-    title: Int,
-    onClick: () -> Unit
+    icon: Int, title: Int, onClick: () -> Unit
 ) {
     Button(
         onClick = onClick,
         colors = ButtonDefaults.buttonColors(containerColor = Color.White),
         shape = RoundedCornerShape(32.dp),
-        modifier = modifier.padding(4.dp)
     ) {
         Row(
-            modifier = Modifier.height(36.dp),
+            modifier = Modifier.height(38.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Image(
@@ -126,21 +116,54 @@ fun SocialButton(
                 contentDescription = null,
                 modifier = Modifier.size(24.dp)
             )
-
             Spacer(modifier = Modifier.size(8.dp))
-
             Text(
                 text = stringResource(id = title),
-                fontFamily = metropolisFontFamily,
-                fontWeight = FontWeight.SemiBold
+                color = Color.Black
             )
         }
     }
 }
 
+@Composable
+fun BasicDialog(title: String, description: String, onClick: () -> Unit) {
+    Surface {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .clip(RoundedCornerShape(16.dp))
+                .padding(16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(
+                text = title,
+                fontWeight = FontWeight.Bold
+            )
+            Spacer(modifier = Modifier.size(8.dp))
+            Text(
+                text = description,
+            )
+            Spacer(modifier = Modifier.size(16.dp))
+            Button(
+                onClick = onClick,
+                colors = ButtonDefaults.buttonColors(containerColor = Orange),
+                shape = RoundedCornerShape(16.dp),
+
+                ) {
+                Text(
+                    text = stringResource(id = R.string.ok),
+                    color = Color.White,
+                    modifier = Modifier.padding(horizontal = 32.dp)
+                )
+            }
+        }
+    }
+
+}
+
 
 @Composable
-fun CustomTextField(
+fun FoodHubTextField(
     value: String,
     onValueChange: (String) -> Unit,
     modifier: Modifier = Modifier,
@@ -166,13 +189,12 @@ fun CustomTextField(
     colors: TextFieldColors = OutlinedTextFieldDefaults.colors().copy(
         focusedIndicatorColor = Orange,
         unfocusedIndicatorColor = Color.LightGray.copy(alpha = 0.4f),
-        focusedTextColor = Color.Black,
-        unfocusedTextColor = Color.Black,
     )
 ) {
     Column(Modifier.padding(vertical = 8.dp)) {
         label?.let {
             Row {
+                Spacer(modifier = Modifier.size(4.dp))
                 it()
             }
         }

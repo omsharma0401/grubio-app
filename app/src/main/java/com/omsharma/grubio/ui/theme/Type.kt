@@ -8,7 +8,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import com.omsharma.grubio.R
 
-val metropolisFontFamily = FontFamily(
+val displayFontFamily = FontFamily(
     Font(R.font.metropolis_regular),
     Font(R.font.metropolis_medium, FontWeight.Medium),
     Font(R.font.metropolis_semibold, FontWeight.SemiBold),
@@ -18,12 +18,22 @@ val metropolisFontFamily = FontFamily(
 
 )
 
+val baseline = Typography()
+
 val Typography = Typography(
-    bodyLarge = TextStyle(
-        fontFamily = metropolisFontFamily,
-        fontWeight = FontWeight.Normal,
-        fontSize = 16.sp,
-        lineHeight = 24.sp,
-        letterSpacing = 0.5.sp
-    )
+    displayLarge = baseline.displayLarge.copy(fontFamily = displayFontFamily),
+    displayMedium = baseline.displayMedium.copy(fontFamily = displayFontFamily),
+    displaySmall = baseline.displaySmall.copy(fontFamily = displayFontFamily),
+    headlineLarge = baseline.headlineLarge.copy(fontFamily = displayFontFamily),
+    headlineMedium = baseline.headlineMedium.copy(fontFamily = displayFontFamily),
+    headlineSmall = baseline.headlineSmall.copy(fontFamily = displayFontFamily),
+    titleLarge = baseline.titleLarge.copy(fontFamily = displayFontFamily),
+    titleMedium = baseline.titleMedium.copy(fontFamily = displayFontFamily),
+    titleSmall = baseline.titleSmall.copy(fontFamily = displayFontFamily),
+    bodyLarge = baseline.bodyLarge.copy(fontFamily = displayFontFamily),
+    bodyMedium = baseline.bodyMedium.copy(fontFamily = displayFontFamily),
+    bodySmall = baseline.bodySmall.copy(fontFamily = displayFontFamily),
+    labelLarge = baseline.labelLarge.copy(fontFamily = displayFontFamily),
+    labelMedium = baseline.labelMedium.copy(fontFamily = displayFontFamily),
+    labelSmall = baseline.labelSmall.copy(fontFamily = displayFontFamily),
 )

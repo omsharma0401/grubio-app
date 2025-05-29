@@ -6,7 +6,7 @@ plugins {
 
     // Dagger Hilt
     id("com.google.dagger.hilt.android") version "2.56.2" apply false
-    id("com.google.devtools.ksp") version "2.1.21-2.0.1" apply false
+    id("com.google.devtools.ksp") version "2.0.21-1.0.25" apply false
 
     // Serialization
     id("org.jetbrains.kotlin.plugin.serialization") version "1.6.21" apply false

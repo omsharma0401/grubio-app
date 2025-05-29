@@ -1,11 +1,13 @@
 package com.omsharma.grubio.ui.features.auth.signup
 
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.omsharma.grubio.data.AppSession
 import com.omsharma.grubio.data.FoodApi
 import com.omsharma.grubio.data.model.SignupRequest
+import com.omsharma.grubio.data.remote.ApiResponse
+import com.omsharma.grubio.data.remote.safeApiCall
+import com.omsharma.grubio.ui.features.auth.BaseAuthViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
@@ -14,18 +16,13 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class SignupViewModel @Inject constructor(
-    val foodApi: FoodApi
-) : ViewModel() {
-
+class SignUpViewModel @Inject constructor(override val foodApi: FoodApi, val session: AppSession) :
+    BaseAuthViewModel(foodApi) {
     private val _uiState = MutableStateFlow<SignupEvent>(SignupEvent.Nothing)
     val uiState = _uiState.asStateFlow()
 
-    private val _navigationEvent = MutableSharedFlow<SignupNavigationEvent>()
+    private val _navigationEvent = MutableSharedFlow<SigupNavigationEvent>()
     val navigationEvent = _navigationEvent.asSharedFlow()
-
-    private val _name = MutableStateFlow("")
-    val name = _name.asStateFlow()
 
     private val _email = MutableStateFlow("")
     val email = _email.asStateFlow()
@@ -33,9 +30,8 @@ class SignupViewModel @Inject constructor(
     private val _password = MutableStateFlow("")
     val password = _password.asStateFlow()
 
-    fun onNameChange(name: String) {
-        _name.value = name
-    }
+    private val _name = MutableStateFlow("")
+    val name = _name.asStateFlow()
 
     fun onEmailChange(email: String) {
         _email.value = email
@@ -45,39 +41,93 @@ class SignupViewModel @Inject constructor(
         _password.value = password
     }
 
-    fun onSignupClick() {
+    fun onNameChange(name: String) {
+        _name.value = name
+    }
+
+    fun onSignUpClick() {
         viewModelScope.launch {
             _uiState.value = SignupEvent.Loading
-
             try {
-                val response = foodApi.signup(
-                    SignupRequest(
-                        name = _name.value,
-                        email = _email.value,
-                        password = _password.value
+                val response = safeApiCall {
+                    foodApi.signUp(
+                        SignupRequest(
+                            name = name.value,
+                            email = email.value,
+                            password = password.value
+                        )
                     )
-                )
-                if (response.token.isNotEmpty()) {
-                    _uiState.value = SignupEvent.Success
-                    _navigationEvent.emit(SignupNavigationEvent.NavigateToHome)
                 }
+                when (response) {
+                    is ApiResponse.Success -> {
+                        _uiState.value = SignupEvent.Success
+                        session.storeToken(response.data.token)
+                        _navigationEvent.emit(SigupNavigationEvent.NavigateToHome)
+                    }
+
+                    else -> {
+                        val errr = (response as? ApiResponse.Error)?.code ?: 0
+                        error = "Sign In Failed"
+                        errorDescription = "Failed to sign up"
+                        when (errr) {
+                            400 -> {
+                                error = "Invalid Credintials"
+                                errorDescription = "Please enter correct details."
+                            }
+                        }
+                        _uiState.value = SignupEvent.Error
+                    }
+                }
+
+
             } catch (e: Exception) {
                 e.printStackTrace()
                 _uiState.value = SignupEvent.Error
             }
+
         }
 
     }
 
-    fun onLoginClick() {
+    fun onLoginClicked() {
         viewModelScope.launch {
-            _navigationEvent.emit(SignupNavigationEvent.NavigateToLogin)
+            _navigationEvent.emit(SigupNavigationEvent.NavigateToLogin)
         }
     }
 
-    sealed class SignupNavigationEvent {
-        object NavigateToLogin : SignupNavigationEvent()
-        object NavigateToHome : SignupNavigationEvent()
+    override fun loading() {
+        viewModelScope.launch {
+            _uiState.value = SignupEvent.Loading
+        }
+    }
+
+    override fun onGoogleError(msg: String) {
+        viewModelScope.launch {
+            errorDescription = msg
+            error = "Google Sign In Failed"
+            _uiState.value = SignupEvent.Error
+        }
+    }
+
+    override fun onFacebookError(msg: String) {
+        viewModelScope.launch {
+            errorDescription = msg
+            error = "Facebook Sign In Failed"
+            _uiState.value = SignupEvent.Error
+        }
+    }
+
+    override fun onSocialLoginSuccess(token: String) {
+        viewModelScope.launch {
+            session.storeToken(token)
+            _uiState.value = SignupEvent.Success
+            _navigationEvent.emit(SigupNavigationEvent.NavigateToHome)
+        }
+    }
+
+    sealed class SigupNavigationEvent {
+        object NavigateToLogin : SigupNavigationEvent()
+        object NavigateToHome : SigupNavigationEvent()
     }
 
     sealed class SignupEvent {

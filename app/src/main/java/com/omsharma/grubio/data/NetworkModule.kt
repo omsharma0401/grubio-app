@@ -1,8 +1,11 @@
 package com.omsharma.grubio.data
 
+import android.content.Context
+import com.omsharma.grubio.BuildConfig
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -14,8 +17,7 @@ object NetworkModule {
     @Provides
     fun provideRetrofit(): Retrofit {
         return Retrofit.Builder()
-            .baseUrl("http://192.168.0.105:8080")
-//            .baseUrl("http://10.0.2.2:8080")
+            .baseUrl(BuildConfig.BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
     }
@@ -23,6 +25,11 @@ object NetworkModule {
     @Provides
     fun provideFoodApi(retrofit: Retrofit): FoodApi {
         return retrofit.create(FoodApi::class.java)
+    }
+
+    @Provides
+    fun provideSession(@ApplicationContext context: Context): AppSession {
+        return AppSession(context)
     }
 
 }

@@ -21,12 +21,18 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -45,42 +51,47 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.omsharma.grubio.R
-import com.omsharma.grubio.ui.CustomTextField
+import com.omsharma.grubio.ui.BasicDialog
+import com.omsharma.grubio.ui.FoodHubTextField
 import com.omsharma.grubio.ui.GroupSocialButtons
 import com.omsharma.grubio.ui.navigation.AuthScreen
 import com.omsharma.grubio.ui.navigation.Home
 import com.omsharma.grubio.ui.navigation.Login
 import com.omsharma.grubio.ui.theme.Orange
-import com.omsharma.grubio.ui.theme.metropolisFontFamily
+import com.omsharma.grubio.ui.theme.Primary
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SignUpScreen(
-    navController: NavController,
-    viewModel: SignupViewModel = hiltViewModel()
-) {
-
+fun SignUpScreen(navController: NavController, viewModel: SignUpViewModel = hiltViewModel()) {
     val name = viewModel.name.collectAsStateWithLifecycle()
     val email = viewModel.email.collectAsStateWithLifecycle()
     val password = viewModel.password.collectAsStateWithLifecycle()
-
     val errorMessage = remember { mutableStateOf<String?>(null) }
     val loading = remember { mutableStateOf(false) }
-
-    val context = LocalContext.current
-
+    val sheetState = rememberModalBottomSheetState()
+    val scope = rememberCoroutineScope()
+    var showDialog by remember { mutableStateOf(false) }
+    LaunchedEffect(errorMessage.value) {
+        if (errorMessage.value != null)
+            scope.launch {
+                showDialog = true
+            }
+    }
     Box(modifier = Modifier.fillMaxSize()) {
+
 
         val uiState = viewModel.uiState.collectAsState()
         when (uiState.value) {
 
-            is SignupViewModel.SignupEvent.Error -> {
+            is SignUpViewModel.SignupEvent.Error -> {
                 // show error
                 loading.value = false
                 errorMessage.value = "Failed"
             }
 
-            is SignupViewModel.SignupEvent.Loading -> {
+            is SignUpViewModel.SignupEvent.Loading -> {
                 loading.value = true
                 errorMessage.value = null
             }
@@ -90,11 +101,11 @@ fun SignUpScreen(
                 errorMessage.value = null
             }
         }
-
+        val context = LocalContext.current
         LaunchedEffect(true) {
             viewModel.navigationEvent.collectLatest { event ->
                 when (event) {
-                    is SignupViewModel.SignupNavigationEvent.NavigateToHome -> {
+                    is SignUpViewModel.SigupNavigationEvent.NavigateToHome -> {
                         navController.navigate(Home) {
                             popUpTo(AuthScreen) {
                                 inclusive = true
@@ -102,7 +113,7 @@ fun SignUpScreen(
                         }
                     }
 
-                    is SignupViewModel.SignupNavigationEvent.NavigateToLogin -> {
+                    is SignUpViewModel.SigupNavigationEvent.NavigateToLogin -> {
                         navController.navigate(Login)
                     }
                 }
@@ -112,71 +123,43 @@ fun SignUpScreen(
         Image(
             painter = painterResource(id = R.drawable.auth_background),
             contentDescription = null,
+            modifier = Modifier.fillMaxSize(),
             contentScale = ContentScale.FillBounds
         )
-
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-
             Box(modifier = Modifier.weight(1f))
-
             Text(
-                modifier = Modifier
-                    .fillMaxWidth(),
                 text = stringResource(id = R.string.sign_up),
-                fontFamily = metropolisFontFamily,
+                fontSize = 32.sp,
                 fontWeight = FontWeight.Bold,
-                fontSize = 28.sp,
-                color = Color.Black
+                modifier = Modifier.fillMaxWidth()
             )
-
-            Spacer(modifier = Modifier.size(42.dp))
-
-            CustomTextField(
-                value = name.value,
-                onValueChange = { viewModel.onNameChange(it) },
+            Spacer(modifier = Modifier.size(20.dp))
+            FoodHubTextField(
+                value = name.value, onValueChange = { viewModel.onNameChange(it) },
                 label = {
-                    Text(
-                        text = stringResource(id = R.string.full_name),
-                        fontFamily = metropolisFontFamily,
-                        fontWeight = FontWeight.SemiBold,
-                        fontSize = 14.sp,
-                        color = Color.Gray
-                    )
-                },
-                modifier = Modifier.fillMaxWidth(),
-            )
-
-            CustomTextField(
-                value = email.value,
-                onValueChange = { viewModel.onEmailChange(it) },
-                label = {
-                    Text(
-                        text = stringResource(id = R.string.email),
-                        fontFamily = metropolisFontFamily,
-                        fontWeight = FontWeight.SemiBold,
-                        fontSize = 14.sp,
-                        color = Color.Gray
-                    )
+                    Text(text = stringResource(id = R.string.full_name), color = Color.Gray)
                 },
                 modifier = Modifier.fillMaxWidth()
             )
-
-            CustomTextField(
+            FoodHubTextField(
+                value = email.value,
+                onValueChange = { viewModel.onEmailChange(it) },
+                label = {
+                    Text(text = stringResource(id = R.string.email), color = Color.Gray)
+                },
+                modifier = Modifier.fillMaxWidth()
+            )
+            FoodHubTextField(
                 value = password.value,
                 onValueChange = { viewModel.onPasswordChange(it) },
                 label = {
-                    Text(
-                        text = stringResource(id = R.string.password),
-                        fontFamily = metropolisFontFamily,
-                        fontWeight = FontWeight.SemiBold,
-                        fontSize = 14.sp,
-                        color = Color.Gray
-                    )
+                    Text(text = stringResource(id = R.string.password), color = Color.Gray)
                 },
                 modifier = Modifier.fillMaxWidth(),
                 visualTransformation = PasswordVisualTransformation(),
@@ -184,31 +167,18 @@ fun SignUpScreen(
                     Image(
                         painter = painterResource(id = R.drawable.ic_eye),
                         contentDescription = null,
-                        modifier = Modifier.size(20.dp)
+                        modifier = Modifier.size(24.dp)
                     )
                 }
             )
-
             Spacer(modifier = Modifier.size(16.dp))
-
-            Text(
-                text = errorMessage.value ?: "",
-                color = Color.Red
-            )
-
+            Text(text = errorMessage.value ?: "", color = Color.Red)
             Button(
-                onClick = viewModel::onSignupClick,
-                modifier = Modifier.height(48.dp),
-                enabled = !loading.value,
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = Orange,
-                    disabledContainerColor = Orange
-                )
+                onClick = viewModel::onSignUpClick, modifier = Modifier.height(48.dp),
+                colors = ButtonDefaults.buttonColors(containerColor = Primary)
             ) {
-
                 Box {
-                    AnimatedContent(
-                        targetState = loading.value,
+                    AnimatedContent(targetState = loading.value,
                         transitionSpec = {
                             fadeIn(animationSpec = tween(300)) + scaleIn(initialScale = 0.8f) togetherWith
                                     fadeOut(animationSpec = tween(300)) + scaleOut(targetScale = 0.8f)
@@ -225,45 +195,47 @@ fun SignUpScreen(
                             Text(
                                 text = stringResource(id = R.string.sign_up),
                                 color = Color.White,
-                                fontFamily = metropolisFontFamily,
-                                fontWeight = FontWeight.SemiBold,
                                 modifier = Modifier.padding(horizontal = 32.dp)
                             )
                         }
+
                     }
+
+
                 }
             }
-
             Spacer(modifier = Modifier.size(16.dp))
-
             Text(
                 text = stringResource(id = R.string.already_have_account),
                 modifier = Modifier
                     .padding(8.dp)
-                    .clickable(interactionSource = null, indication = null) {
-                        viewModel.onLoginClick()
+                    .clickable {
+                        viewModel.onLoginClicked()
                     }
                     .fillMaxWidth(),
-                textAlign = TextAlign.Center,
-                fontFamily = metropolisFontFamily,
-                fontWeight = FontWeight.SemiBold,
-                fontSize = 14.sp,
-                color = Color.DarkGray
+                textAlign = TextAlign.Center
             )
-
-            Spacer(modifier = Modifier.size(16.dp))
-
-            GroupSocialButtons(
-                color = Color.Black,
-                onFacebookClick = {},
-                onGoogleClick = {}
+            GroupSocialButtons(color = Color.Black, viewModel)
+        }
+    }
+    if (showDialog) {
+        ModalBottomSheet(onDismissRequest = { showDialog = false }, sheetState = sheetState) {
+            BasicDialog(
+                title = viewModel.error,
+                description = viewModel.errorDescription,
+                onClick = {
+                    scope.launch {
+                        sheetState.hide()
+                        showDialog = false
+                    }
+                }
             )
         }
     }
 }
 
-@Preview
+@Preview(showBackground = true)
 @Composable
-private fun SignUpScreenPreview() {
+fun PreviewSignUpScreen() {
     SignUpScreen(rememberNavController())
 }

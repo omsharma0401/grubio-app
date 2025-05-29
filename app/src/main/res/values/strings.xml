@@ -14,4 +14,6 @@
     <string name="full_name">Full Name</string>
     <string name="email">E-mail</string>
     <string name="login">Log In</string>
+    <string name="ok">OK</string>
+
 </resources>

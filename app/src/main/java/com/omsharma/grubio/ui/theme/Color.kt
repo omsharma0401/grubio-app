@@ -11,3 +11,5 @@ val PurpleGrey40 = Color(0xFF625b71)
 val Pink40 = Color(0xFF7D5260)
 
 val Orange = Color(0xFFFE724C)
+val Primary = Color(0xFFFE724C)
+val Mustard = Color(0xFFFFC529)

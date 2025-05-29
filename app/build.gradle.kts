@@ -28,6 +28,17 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         buildConfigField("String", "WEB_CLIENT_ID", getWebClientId())
+        buildConfigField("String", "FACEBOOK_APP_ID", getFacebookAppId())
+        buildConfigField("String", "FACEBOOK_CLIENT_TOKEN", getFacebookClientToken())
+        buildConfigField("String", "BASE_URL", getBaseUrl())
+
+        manifestPlaceholders.put("facebook_app_id", getFacebookAppId())
+        manifestPlaceholders.put("facebook_client_token", getFacebookClientToken())
+        manifestPlaceholders.put("fb_login_protocol_scheme", getFbLoginProtocolScheme())
+
+        resValue("string", "facebook_app_id", getFacebookAppId())
+        resValue("string", "facebook_client_token", getFacebookClientToken())
+        resValue("string", "fb_login_protocol_scheme", getFbLoginProtocolScheme())
 
     }
 
@@ -105,11 +116,46 @@ dependencies {
     implementation("androidx.credentials:credentials-play-services-auth:1.5.0")
     implementation("com.google.android.libraries.identity.googleid:googleid:1.1.1")
 
+    // Facebook Login
+    implementation("com.facebook.android:facebook-login:18.0.3")
+
+    // Coil
+    implementation("io.coil-kt.coil3:coil-compose:3.0.4")
+    implementation("io.coil-kt.coil3:coil-network-okhttp:3.0.4")
+
 }
 
-fun getWebClientId(): String{
+fun getWebClientId(): String {
     val propFile = rootProject.file("local.properties")
     val properties = Properties()
     properties.load(FileInputStream(propFile))
     return properties.getProperty("WEB_CLIENT_ID")
+}
+
+fun getFacebookAppId(): String {
+    val propFile = rootProject.file("local.properties")
+    val properties = Properties()
+    properties.load(FileInputStream(propFile))
+    return properties.getProperty("FACEBOOK_APP_ID")
+}
+
+fun getFacebookClientToken(): String {
+    val propFile = rootProject.file("local.properties")
+    val properties = Properties()
+    properties.load(FileInputStream(propFile))
+    return properties.getProperty("FACEBOOK_CLIENT_TOKEN")
+}
+
+fun getFbLoginProtocolScheme(): String {
+    val propFile = rootProject.file("local.properties")
+    val properties = Properties()
+    properties.load(FileInputStream(propFile))
+    return properties.getProperty("FB_LOGIN_PROTOCOL_SCHEME")
+}
+
+fun getBaseUrl(): String {
+    val propFile = rootProject.file("local.properties")
+    val properties = Properties()
+    properties.load(FileInputStream(propFile))
+    return properties.getProperty("BASE_URL")
 }
