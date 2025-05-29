@@ -12,6 +12,7 @@ plugins {
 
     // Serialization
     id("org.jetbrains.kotlin.plugin.serialization")
+    id("kotlin-parcelize")
 
 }
 
@@ -35,6 +36,7 @@ android {
         manifestPlaceholders.put("facebook_app_id", getFacebookAppId())
         manifestPlaceholders.put("facebook_client_token", getFacebookClientToken())
         manifestPlaceholders.put("fb_login_protocol_scheme", getFbLoginProtocolScheme())
+        manifestPlaceholders.put("MAPS_API_KEY", getMapsApiKey())
 
         resValue("string", "facebook_app_id", getFacebookAppId())
         resValue("string", "facebook_client_token", getFacebookClientToken())
@@ -123,6 +125,13 @@ dependencies {
     implementation("io.coil-kt.coil3:coil-compose:3.0.4")
     implementation("io.coil-kt.coil3:coil-network-okhttp:3.0.4")
 
+    // Google Maps Compose
+    implementation("com.google.maps.android:maps-compose:6.4.1")
+
+    // Location
+    implementation("com.google.android.gms:play-services-location:21.3.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.9.0")
+
 }
 
 fun getWebClientId(): String {
@@ -151,6 +160,13 @@ fun getFbLoginProtocolScheme(): String {
     val properties = Properties()
     properties.load(FileInputStream(propFile))
     return properties.getProperty("FB_LOGIN_PROTOCOL_SCHEME")
+}
+
+fun getMapsApiKey(): String {
+    val propFile = rootProject.file("local.properties")
+    val properties = Properties()
+    properties.load(FileInputStream(propFile))
+    return properties.getProperty("MAPS_API_KEY")
 }
 
 fun getBaseUrl(): String {

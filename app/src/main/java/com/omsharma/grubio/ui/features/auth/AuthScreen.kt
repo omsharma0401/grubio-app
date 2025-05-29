@@ -44,10 +44,9 @@ import androidx.navigation.compose.rememberNavController
 import com.omsharma.grubio.R
 import com.omsharma.grubio.ui.BasicDialog
 import com.omsharma.grubio.ui.GroupSocialButtons
-import com.omsharma.grubio.ui.navigation.AuthScreen
 import com.omsharma.grubio.ui.navigation.Home
 import com.omsharma.grubio.ui.navigation.Login
-import com.omsharma.grubio.ui.navigation.Signup
+import com.omsharma.grubio.ui.navigation.SignUp
 import com.omsharma.grubio.ui.theme.Orange
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -63,7 +62,7 @@ fun AuthScreen(navController: NavController, viewModel: AuthScreenViewModel = hi
     }
     val brush = Brush.verticalGradient(
         colors = listOf(
-            androidx.compose.ui.graphics.Color.Transparent, androidx.compose.ui.graphics.Color.Black
+            Color.Transparent, Color.Black
         ),
         startY = imageSize.value.height.toFloat() / 3,
     )
@@ -72,14 +71,14 @@ fun AuthScreen(navController: NavController, viewModel: AuthScreenViewModel = hi
             when (event) {
                 is AuthScreenViewModel.AuthNavigationEvent.NavigateToHome -> {
                     navController.navigate(Home) {
-                        popUpTo(AuthScreen) {
+                        popUpTo(com.omsharma.grubio.ui.navigation.AuthScreen) {
                             inclusive = true
                         }
                     }
                 }
 
                 is AuthScreenViewModel.AuthNavigationEvent.NavigateToSignUp -> {
-                    navController.navigate(Signup)
+                    navController.navigate(SignUp)
                 }
 
                 is AuthScreenViewModel.AuthNavigationEvent.ShowErrorDialog -> {
@@ -161,7 +160,7 @@ fun AuthScreen(navController: NavController, viewModel: AuthScreenViewModel = hi
             Spacer(modifier = Modifier.height(16.dp))
             Button(
                 onClick = {
-                    navController.navigate(Signup)
+                    navController.navigate(SignUp)
                 },
                 modifier = Modifier.fillMaxWidth(),
                 colors = ButtonDefaults.buttonColors(containerColor = Color.Gray.copy(alpha = 0.2f)),

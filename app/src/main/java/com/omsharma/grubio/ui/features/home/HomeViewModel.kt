@@ -2,9 +2,9 @@ package com.omsharma.grubio.ui.features.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.omsharma.grubio.data.FoodApi
 import com.omsharma.grubio.data.model.Category
 import com.omsharma.grubio.data.model.Restaurant
+import com.omsharma.grubio.data.FoodApi
 import com.omsharma.grubio.data.remote.ApiResponse
 import com.omsharma.grubio.data.remote.safeApiCall
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -77,6 +77,18 @@ class HomeViewModel @Inject constructor(private val foodApi: FoodApi) : ViewMode
         return list
     }
 
+    fun onRestaurantSelected(it: Restaurant) {
+        viewModelScope.launch {
+            _navigationEvent.emit(
+                HomeScreenNavigationEvents.NavigateToDetail(
+                    it.name,
+                    it.imageUrl,
+                    it.id
+                )
+            )
+        }
+    }
+
     sealed class HomeScreenState {
         object Loading : HomeScreenState()
         object Empty : HomeScreenState()
@@ -84,6 +96,7 @@ class HomeViewModel @Inject constructor(private val foodApi: FoodApi) : ViewMode
     }
 
     sealed class HomeScreenNavigationEvents {
-        object NavigateToDetail : HomeScreenNavigationEvents()
+        data class NavigateToDetail(val name: String, val imageUrl: String, val id: String) :
+            HomeScreenNavigationEvents()
     }
 }

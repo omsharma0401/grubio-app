@@ -1,8 +1,9 @@
 package com.omsharma.grubio.ui.features.auth
 
+
 import androidx.lifecycle.viewModelScope
-import com.omsharma.grubio.data.AppSession
 import com.omsharma.grubio.data.FoodApi
+import com.omsharma.grubio.data.FoodHubSession
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -14,7 +15,7 @@ import javax.inject.Inject
 @HiltViewModel
 class AuthScreenViewModel @Inject constructor(
     override val foodApi: FoodApi,
-    val session: AppSession
+    val session: FoodHubSession
 ) :
     BaseAuthViewModel(foodApi) {
 

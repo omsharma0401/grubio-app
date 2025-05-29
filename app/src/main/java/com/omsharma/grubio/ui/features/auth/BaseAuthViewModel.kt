@@ -40,7 +40,7 @@ abstract class BaseAuthViewModel(open val foodApi: FoodApi) : ViewModel() {
         viewModelScope.launch {
             loading()
             try {
-                val response = googleAuthUiProvider.login(
+                val response = googleAuthUiProvider.signIn(
                     context, CredentialManager.create(context)
                 )
                 fetchFoodAppToken(response.token, "google") {

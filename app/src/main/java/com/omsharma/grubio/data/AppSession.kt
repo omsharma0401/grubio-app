@@ -3,9 +3,9 @@ package com.omsharma.grubio.data
 import android.content.Context
 import android.content.SharedPreferences
 
-class AppSession(val context: Context) {
+class FoodHubSession(val context: Context) {
     val sharedPres: SharedPreferences =
-        context.getSharedPreferences("grubio", Context.MODE_PRIVATE)
+        context.getSharedPreferences("foodhub", Context.MODE_PRIVATE)
 
 
     fun storeToken(token: String) {

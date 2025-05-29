@@ -41,23 +41,22 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import com.omsharma.grubio.R
 import com.omsharma.grubio.ui.BasicDialog
 import com.omsharma.grubio.ui.FoodHubTextField
 import com.omsharma.grubio.ui.GroupSocialButtons
 import com.omsharma.grubio.ui.navigation.AuthScreen
 import com.omsharma.grubio.ui.navigation.Home
-import com.omsharma.grubio.ui.navigation.Signup
+import com.omsharma.grubio.ui.navigation.SignUp
 import com.omsharma.grubio.ui.theme.Orange
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -111,7 +110,7 @@ fun SignInScreen(navController: NavController, viewModel: SignInViewModel = hilt
                     }
 
                     is SignInViewModel.SigInNavigationEvent.NavigateToSignUp -> {
-                        navController.navigate(Signup)
+                        navController.navigate(SignUp)
                     }
                 }
             }
@@ -131,7 +130,7 @@ fun SignInScreen(navController: NavController, viewModel: SignInViewModel = hilt
         ) {
             Box(modifier = Modifier.weight(1f))
             Text(
-                text = stringResource(id = R.string.login),
+                text = stringResource(id = R.string.sign_up),
                 fontSize = 32.sp,
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier.fillMaxWidth()
@@ -168,8 +167,7 @@ fun SignInScreen(navController: NavController, viewModel: SignInViewModel = hilt
                 colors = ButtonDefaults.buttonColors(containerColor = Orange)
             ) {
                 Box {
-                    AnimatedContent(
-                        targetState = loading.value,
+                    AnimatedContent(targetState = loading.value,
                         transitionSpec = {
                             fadeIn(animationSpec = tween(300)) + scaleIn(initialScale = 0.8f) togetherWith
                                     fadeOut(animationSpec = tween(300)) + scaleOut(targetScale = 0.8f)
@@ -227,10 +225,4 @@ fun SignInScreen(navController: NavController, viewModel: SignInViewModel = hilt
             )
         }
     }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun PreviewSignUpScreen() {
-    SignInScreen(rememberNavController())
 }

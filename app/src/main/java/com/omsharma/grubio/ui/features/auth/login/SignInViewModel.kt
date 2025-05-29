@@ -1,12 +1,12 @@
 package com.omsharma.grubio.ui.features.auth.login
 
 import androidx.lifecycle.viewModelScope
-import com.omsharma.grubio.data.AppSession
+import com.omsharma.grubio.ui.features.auth.BaseAuthViewModel
 import com.omsharma.grubio.data.FoodApi
-import com.omsharma.grubio.data.model.LoginRequest
+import com.omsharma.grubio.data.FoodHubSession
+import com.omsharma.grubio.data.model.SignInRequest
 import com.omsharma.grubio.data.remote.ApiResponse
 import com.omsharma.grubio.data.remote.safeApiCall
-import com.omsharma.grubio.ui.features.auth.BaseAuthViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -19,7 +19,7 @@ import javax.inject.Inject
 @HiltViewModel
 class SignInViewModel @Inject constructor(
     override val foodApi: FoodApi,
-    val session: AppSession
+    val session: FoodHubSession
 ) :
     BaseAuthViewModel(foodApi) {
 
@@ -48,7 +48,7 @@ class SignInViewModel @Inject constructor(
             _uiState.value = SignInEvent.Loading
             val response = safeApiCall {
                 foodApi.signIn(
-                    LoginRequest(
+                    SignInRequest(
                         email = email.value, password = password.value
                     )
                 )

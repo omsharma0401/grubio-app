@@ -6,13 +6,14 @@ import androidx.credentials.Credential
 import androidx.credentials.CredentialManager
 import androidx.credentials.CustomCredential
 import androidx.credentials.GetCredentialRequest
+import com.omsharma.grubio.data.model.GoogleAccount
 import com.google.android.libraries.identity.googleid.GetSignInWithGoogleOption
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
 import com.omsharma.grubio.BuildConfig
-import com.omsharma.grubio.data.model.GoogleAccount
+
 
 class GoogleAuthUiProvider {
-    suspend fun login(
+    suspend fun signIn(
         activityContext: Context,
         credentialManager: CredentialManager
     ): GoogleAccount {

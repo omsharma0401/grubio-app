@@ -1,12 +1,12 @@
 package com.omsharma.grubio.ui.features.auth.signup
 
 import androidx.lifecycle.viewModelScope
-import com.omsharma.grubio.data.AppSession
+import com.omsharma.grubio.data.model.SignUpRequest
+import com.omsharma.grubio.ui.features.auth.BaseAuthViewModel
 import com.omsharma.grubio.data.FoodApi
-import com.omsharma.grubio.data.model.SignupRequest
+import com.omsharma.grubio.data.FoodHubSession
 import com.omsharma.grubio.data.remote.ApiResponse
 import com.omsharma.grubio.data.remote.safeApiCall
-import com.omsharma.grubio.ui.features.auth.BaseAuthViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -16,7 +16,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class SignUpViewModel @Inject constructor(override val foodApi: FoodApi, val session: AppSession) :
+class SignUpViewModel @Inject constructor(override val foodApi: FoodApi, val session: FoodHubSession) :
     BaseAuthViewModel(foodApi) {
     private val _uiState = MutableStateFlow<SignupEvent>(SignupEvent.Nothing)
     val uiState = _uiState.asStateFlow()
@@ -51,7 +51,7 @@ class SignUpViewModel @Inject constructor(override val foodApi: FoodApi, val ses
             try {
                 val response = safeApiCall {
                     foodApi.signUp(
-                        SignupRequest(
+                        SignUpRequest(
                             name = name.value,
                             email = email.value,
                             password = password.value
