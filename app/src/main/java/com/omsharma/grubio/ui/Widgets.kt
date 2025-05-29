@@ -43,7 +43,6 @@ import com.omsharma.grubio.ui.features.auth.BaseAuthViewModel
 import com.omsharma.grubio.ui.theme.Orange
 
 
-@SuppressLint("ContextCastToActivity")
 @Composable
 fun GroupSocialButtons(
     color: Color = Color.White,
@@ -76,24 +75,29 @@ fun GroupSocialButtons(
                 color = color
             )
         }
-        val context = LocalContext.current as ComponentActivity
 
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-            SocialButton(
-                icon = R.drawable.ic_facebook,
-                title = R.string.sign_up_with_facebook,
-                onClick = { viewModel.onFacebookClicked(context) }
-            )
-            SocialButton(
-                icon = R.drawable.ic_google,
-                title = R.string.sign_up_with_google,
-                onClick = { viewModel.onGoogleClicked(context) }
-            )
+
+        val context = LocalContext.current
+        val componentActivity = context as? ComponentActivity
+
+        if (componentActivity != null) {
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                SocialButton(
+                    icon = R.drawable.ic_facebook,
+                    title = R.string.sign_up_with_facebook,
+                    onClick = { viewModel.onFacebookClicked(context) }
+                )
+                SocialButton(
+                    icon = R.drawable.ic_google,
+                    title = R.string.sign_up_with_google,
+                    onClick = { viewModel.onGoogleClicked(context) }
+                )
+            }
         }
-
     }
 }
 

@@ -26,7 +26,7 @@ class GoogleAuthUiProvider {
     fun handleCredentials(creds: Credential): GoogleAccount {
         when {
             creds is CustomCredential && creds.type == GoogleIdTokenCredential.TYPE_GOOGLE_ID_TOKEN_CREDENTIAL -> {
-                val googleIdTokenCredential = creds as GoogleIdTokenCredential
+                val googleIdTokenCredential = GoogleIdTokenCredential.createFrom(creds.data)
                 Log.d("GoogleAuthUiProvider", "GoogleIdTokenCredential: $googleIdTokenCredential")
                 return GoogleAccount(
                     token = googleIdTokenCredential.idToken,
