@@ -32,6 +32,7 @@ android {
         buildConfigField("String", "FACEBOOK_APP_ID", getFacebookAppId())
         buildConfigField("String", "FACEBOOK_CLIENT_TOKEN", getFacebookClientToken())
         buildConfigField("String", "BASE_URL", getBaseUrl())
+        buildConfigField("String", "MAPS_API_KEY", getMapsApiKey())
 
         manifestPlaceholders.put("facebook_app_id", getFacebookAppId())
         manifestPlaceholders.put("facebook_client_token", getFacebookClientToken())
@@ -41,6 +42,7 @@ android {
         resValue("string", "facebook_app_id", getFacebookAppId())
         resValue("string", "facebook_client_token", getFacebookClientToken())
         resValue("string", "fb_login_protocol_scheme", getFbLoginProtocolScheme())
+        resValue("string", "maps_api_key", getMapsApiKey())
 
     }
 
