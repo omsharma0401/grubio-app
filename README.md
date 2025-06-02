@@ -21,17 +21,9 @@ Grubio is a modern food delivery app that lets users browse food, manage their c
 ## How to Run
 
 1. Clone this repo  
-2. Open the project in Android Studio (Arctic Fox or newer recommended)  
+2. Open the project in Android Studio  
 3. Add your API keys and backend URL configuration:
-   - Maps API keys as needed (backend handles most map services)  
+   - Maps API keys as needed
    - OAuth credentials for Facebook and Google login  
    - Backend endpoint URL (point to your Ktor backend or a deployed instance)  
 4. Build and run the app on an emulator or physical device  
-
----
-
-Grubio combines modern Android development tools and architecture patterns to deliver a smooth and responsive food delivery experience.
-
----
-
-If you want me to help add screenshots or contribution guidelines, just say the word!
