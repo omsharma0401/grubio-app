@@ -22,8 +22,23 @@ Grubio is a modern food delivery app that lets users browse food, manage their c
 
 1. Clone this repo  
 2. Open the project in Android Studio  
-3. Add your API keys and backend URL configuration:
-   - Maps API keys as needed
-   - OAuth credentials for Facebook and Google login  
-   - Backend endpoint URL (point to your Ktor backend or a deployed instance)  
-4. Build and run the app on an emulator or physical device  
+3. Create or update the `local.properties` file in the root of the project with your own credentials and URLs. It should look like this:
+
+   ```properties
+   WEB_CLIENT_ID="your-google-web-client-id.apps.googleusercontent.com"
+
+   FACEBOOK_APP_ID="your-facebook-app-id"
+   FACEBOOK_CLIENT_TOKEN="your-facebook-client-token"
+   FB_LOGIN_PROTOCOL_SCHEME="your-facebook-protocol-scheme"
+
+   MAPS_API_KEY="your-google-maps-api-key"
+
+   # Use this for running on a physical device or connected device on the same network
+   # BASE_URL="http://your-local-ip:8080"
+
+   # Use this for running on Android Emulator
+   BASE_URL="http://10.0.2.2:8080"
+   
+4. Make sure your backend (Ktor server) is running and accessible via the BASE_URL you set
+
+5. Build and run the app on an emulator or physical device
